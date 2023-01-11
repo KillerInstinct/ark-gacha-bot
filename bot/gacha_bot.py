@@ -107,9 +107,9 @@ class GachaBot:
                 arb_station,
                 self.tower_settings.stryder_depositing,
             ),
-            grinding_station,
-            MeatFeedStation(meat_data, self.player, self.tribelogs),
-            BerryFeedStation(berry_data, self.player, self.tribelogs),
+            #grinding_station,
+            #MeatFeedStation(meat_data, self.player, self.tribelogs),
+            #BerryFeedStation(berry_data, self.player, self.tribelogs),
             arb_station,
             ytrap_station,
         ]
