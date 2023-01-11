@@ -173,7 +173,7 @@ class CrystalStation(Station):
             self.player.inventory.search_for(item)
             self.player.sleep(0.3)
             stacks = self.player.inventory.count_item(item)
-            profits[item] = int((stacks * item.stack_size) - (0.5 * item.stack_size))
+            profits[item] = max(int((stacks * item.stack_size) - (0.5 * item.stack_size)), 0)
             self.player.inventory.click_transfer_all()
         self.stryder.inventory.close()
 
@@ -291,7 +291,7 @@ class CrystalStation(Station):
         -----------
         A dictionary containing the amounts of items deposited for dust and pearls
         """
-        gains = {DUST: 0, BLACK_PEARL: 0}
+        gains = {DUST: 0, BLACK_PEARL: 0, FLINT: 0, STONE: 0, FUNGAL_WOOD: 0}
         turns = {
             40: self.player.turn_x_by,
             -50: self.player.turn_y_by,
