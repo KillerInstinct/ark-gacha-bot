@@ -110,8 +110,8 @@ class CrystalStation(Station):
 
     def is_ready(self) -> bool:
         """Checks whether the station is ready or not"""
-        if self.ytrap_station.total_ytraps_deposited < 2000:
-            return False
+        #if self.ytrap_station.total_ytraps_deposited < 2000:
+        #    return False
         return super().is_ready()
 
     def complete(self) -> tuple[Embed, CrystalStatistics]:
