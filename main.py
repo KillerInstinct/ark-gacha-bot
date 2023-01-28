@@ -1,4 +1,3 @@
-import time
 from threading import Thread
 
 from pynput import keyboard  # type: ignore[import]
@@ -18,7 +17,6 @@ def main():
 
 def on__key_press(key):
     """Connets inputs from listener thread to their corresponding function"""
-
     if key == keyboard.Key.f1:
         # make sure bot is not already active
         if not (ArkBot.paused or ArkBot.running):

@@ -11,16 +11,16 @@ resolution.
 """
 import re
 
-import cv2 as cv # type: ignore[import]
+import cv2 as cv  # type: ignore[import]
 import numpy as np
-import PIL # type: ignore[import]
-import pyautogui as pg # type: ignore[import]
-import pygetwindow # type: ignore[import]
-import win32gui # type: ignore[import]
-from mss import mss, tools # type: ignore[import]
+import PIL  # type: ignore[import]
+import pyautogui as pg  # type: ignore[import]
+import pygetwindow  # type: ignore[import]
+import win32gui  # type: ignore[import]
+from mss import mss, tools  # type: ignore[import]
 from PIL import Image, ImageOps
-from pytesseract import pytesseract as tes # type: ignore[import]
-from screeninfo import get_monitors # type: ignore[import]
+from pytesseract import pytesseract as tes  # type: ignore[import]
+from screeninfo import get_monitors  # type: ignore[import]
 
 # set tesseract path
 tes.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -50,7 +50,7 @@ class ArkWindow:
     """
 
     TITLE_BAR_HEIGHT = 30
-
+    
     def __init__(self) -> None:
         self._window = self.get_window()
         self._monitor = self.get_monitor()
@@ -180,11 +180,7 @@ class ArkWindow:
 
     def need_boundary_scaling(self):
         """Checks if we need to scale width and height on regions or images"""
-        return not (
-            self._monitor["height"] == 1080
-            and self._monitor["width"] == 1920
-            or not self._fullscreen
-        )
+        return False
 
     def update_boundaries(self):
         """Re-initializes the class to update the window"""
@@ -283,9 +279,15 @@ class ArkWindow:
     ):
         """Finds the given template on the screen."""
 
-        return pg.locateOnScreen(
-            self.convert_image(template),
-            region=self.convert_region(region) if convert else region,
+        if convert:
+            region = self.convert_region(region)
+
+        haystack: np.ndarray = np.asarray(self.grab_screen(region, convert=False))  # type: ignore[arg-type]
+        image_rgb = cv.cvtColor(haystack, cv.COLOR_BGR2RGB)
+        img = Image.fromarray(image_rgb)
+        return pg.locate(
+            self.convert_image(template) if convert else template,
+            img,
             confidence=confidence,
             grayscale=grayscale,
         )
@@ -411,5 +413,8 @@ class ArkWindow:
 
     def set_foreground(self):
         """put the window in the foreground"""
-        self.find_window_wildcard(".*ARK: Survival Evolved.*")
-        win32gui.SetForegroundWindow(self._handle)
+        try:
+            self.find_window_wildcard(".*ARK: Survival Evolved.*")
+            win32gui.SetForegroundWindow(self._handle)
+        except Exception:
+            pass

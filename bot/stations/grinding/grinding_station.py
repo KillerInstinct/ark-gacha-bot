@@ -666,9 +666,9 @@ class GrindingStation(Station):
         """
         expected = {
             SILICA_PEARL: (6000, 60000),
-            PASTE: (7000, 160000),
+            PASTE: (7000, 180000),
             ELECTRONICS: (800, 10000),
-            METAL_INGOT: (9000, 40000),
+            METAL_INGOT: (9000, 60000),
         }
         # we dont care about crystal or hide
         if item not in expected:
@@ -1073,6 +1073,7 @@ class GrindingStation(Station):
             return self.create_embed(stats), stats
 
         finally:
+            self.transfer_dedi_wall()
             self.status = Status.WAITING_FOR_ITEMS
             self.ready = False
 
@@ -1121,7 +1122,7 @@ class GrindingStation(Station):
         Im sure theres a cleaner way to do this but it works.
         """
         bed_map = BedMap()
-        transfer_bed = Bed("grindingtransfer", self.station_data.beds[0].coords)
+        transfer_bed = Bed("dedi_transfer", self.station_data.beds[0].coords)
         bed_map.travel_to(transfer_bed)
         self.tribelog.check_tribelogs()
         self.player.await_spawned()
@@ -1140,6 +1141,10 @@ class GrindingStation(Station):
                 self.player.turn_x_by(90, delay=0.5)
             self.dedi.attempt_deposit(SILICA_PEARL, False)
             self.player.turn_x_by(-90, delay=0.5)
+            self.player.turn_x_by(-90, delay=0.5)
+
+            self.dedi.attempt_deposit(PASTE, False)
+            self.player.turn_x_by(90, delay=0.5)
 
             if i != 0:
                 self.player.turn_y_by(-50, delay=0.5)
